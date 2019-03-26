@@ -108,31 +108,114 @@ const salesByWeek = [
 
 
 const container = document.querySelector("#display-container")
+
+let input = document.createElement("input")
+input.type = "text"
+input.id = "searchInput"
+
+container.appendChild(input)
+
+
 let header = document.createElement("h1")
 header.textContent = "Weekly sales report"
 let hr1 = document.createElement("hr")
+let article = document.createElement("article")
+container.appendChild(article)
 container.appendChild(header)
 container.appendChild(hr1)
 
 
-salesByWeek.forEach(property => {
+
+const createElement = (newObject) => {
+
+    newObject.forEach(property => {
     console.log(property.gross_profit)
 
     let firstName = document.createElement("h2")
-    firstName.textContent = property.sales_agent.first_name
-    container.appendChild(firstName)
+    firstName.textContent = property.sales_agent.first_name + " " + property.sales_agent.last_name
+    article.appendChild(firstName)
+    container.appendChild(article)
 
 for(const vehicle of Object.entries(property.vehicle)){
     // console.log(vehicle)
     let vehicleDiv = document.createElement("div")
     vehicleDiv.textContent = vehicle[0] + ": " + vehicle[1]
-    container.appendChild(vehicleDiv)
+    article.appendChild(vehicleDiv)
+    container.appendChild(article)
 }
 
     let profit = document.createElement("h3")
     profit.textContent = "Profit: $" + property.gross_profit
-    container.appendChild(profit)
+    article.appendChild(profit)
+    container.appendChild(article)
 
     let hr = document.createElement("hr")
-    container.appendChild(hr)
+    article.appendChild(hr)
+    container.appendChild(article)
 })
+}
+
+createElement(salesByWeek)
+
+
+//challenge
+const searchInput = document.querySelector("#searchInput")
+
+
+
+//function for filter array section
+const filterVehicle = (object) => {
+    let firstName = document.createElement("h2")
+    firstName.textContent = object.sales_agent.first_name + " " + object.sales_agent.last_name
+    article.appendChild(firstName)
+    container.appendChild(article)
+
+    for(const vehicle of Object.entries(object.vehicle)){
+        let vehicleDiv = document.createElement("div")
+        vehicleDiv.textContent = vehicle[0] + ": " + vehicle[1]
+        article.appendChild(vehicleDiv)
+        container.appendChild(article)
+    }
+
+    let profit = document.createElement("h3")
+    profit.textContent = "Profit: $" + object.gross_profit
+    article.appendChild(profit)
+    container.appendChild(article)
+
+    let hr = document.createElement("hr")
+    article.appendChild(hr)
+    container.appendChild(article)
+
+}
+
+const clearElement = (parentNode) => {
+    while (parentNode.firstChild) {
+      parentNode.removeChild(parentNode.firstChild);
+    }
+  };
+
+
+
+searchInput.addEventListener("keypress", event => {
+    if (event.charCode === 13) {
+      const searchTerm = event.target.value
+      // console.log(searchTerm)
+      clearElement(article)
+      salesByWeek.forEach(sale => {
+          // console.log(Object.values(sale.sales_agent))
+          let agentArray = Object.values(sale.sales_agent)
+        //   console.log(sale)
+         const searchBar = agentArray.filter(entry => {
+              console.log(entry)
+              return entry.toLowerCase().includes(searchTerm.toLowerCase())
+          })
+        //   console.log(searchBar)
+          if(searchBar.length > 0){
+            //   console.log(sale)
+              filterVehicle(sale)
+          }
+
+        });
+    }
+  }
+  )
